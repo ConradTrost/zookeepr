@@ -2,9 +2,13 @@ const fs = require('fs');
 const path = require('path');const express = require('express');
 const app = express();
 // parse incoming string or array data
-app.use(express.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true })); // Extended true means that there can be nested JSON data
 // parse incoming JSON data
 app.use(express.json());
+
+// Middleware that allows css and javascript to accompany the html files
+app.use(express.static('public'));
+
 const { animals } = require('./data/animals.json');
 const PORT = process.env.PORT || 3001;
 
@@ -107,6 +111,10 @@ app.post('/api/animals', (req, res) => {
       res.json(animal);
     }
 });
+
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, './public/index.html'));
+})
 
 app.listen(PORT, () => {
     console.log(`API server now on port ${PORT}!`);
